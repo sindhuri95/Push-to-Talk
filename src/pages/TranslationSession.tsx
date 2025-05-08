@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Mic, MicOff, Clock, ArrowRight, LockOpen } from "lucide-react";
+import { Mic, MicOff, Clock, ArrowRight, CircleArrowRight } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { Slider } from "@/components/ui/slider";
@@ -230,27 +230,29 @@ const TranslationSession = () => {
           {/* End session controls */}
           <div className="bg-white p-3 rounded-lg shadow-sm flex justify-center">
             {!showGenerateButton ? (
-              <div className="relative flex items-center w-64">
-                <LockOpen className="absolute left-2 h-5 w-5 text-red-500 z-10" />
-                <div className="flex-1">
-                  <Slider
-                    id="end-session-slider"
-                    value={endSessionValue}
-                    min={0}
-                    max={100}
-                    step={1}
-                    onValueChange={handleSliderChange}
-                    onValueCommit={handleSliderReleased}
-                    onMouseDown={() => setIsSliderActive(true)}
-                    onTouchStart={() => setIsSliderActive(true)}
-                    className="w-full"
-                    disabled={isGeneratingSummary}
-                  />
+              <div className="relative w-64 h-14 bg-black rounded-full overflow-hidden shadow-lg flex items-center">
+                <div 
+                  className="absolute left-0 top-0 bottom-0 flex items-center justify-center z-10 w-14 h-14 bg-white rounded-full"
+                  style={{ left: `calc(${endSessionValue[0]}% - ${endSessionValue[0] > 0 ? 56 * (endSessionValue[0]/100) : 0}px)` }}
+                >
+                  <CircleArrowRight className="h-8 w-8 text-healthcare-primary" />
                 </div>
-                <div className="flex items-center ml-2">
-                  <span className="text-sm font-medium text-red-500 mr-1">End</span>
-                  <ArrowRight className="h-4 w-4 text-red-500" />
+                <div className="flex-1 text-center text-white font-medium ml-16">
+                  Slide to End Session
                 </div>
+                <Slider
+                  id="end-session-slider"
+                  value={endSessionValue}
+                  min={0}
+                  max={100}
+                  step={1}
+                  onValueChange={handleSliderChange}
+                  onValueCommit={handleSliderReleased}
+                  onMouseDown={() => setIsSliderActive(true)}
+                  onTouchStart={() => setIsSliderActive(true)}
+                  className="absolute top-0 left-0 right-0 bottom-0 opacity-0 w-full cursor-pointer"
+                  disabled={isGeneratingSummary}
+                />
               </div>
             ) : (
               <Button
