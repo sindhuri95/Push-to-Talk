@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Mic, MicOff, Clock, SlidersHorizontal, LockOpen } from "lucide-react";
+import { Mic, MicOff, Clock, ArrowRight, LockOpen } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { Slider } from "@/components/ui/slider";
@@ -17,6 +17,7 @@ const TranslationSession = () => {
   const [endSessionValue, setEndSessionValue] = useState([0]);
   const [isSliderActive, setIsSliderActive] = useState(false);
   const [isGeneratingSummary, setIsGeneratingSummary] = useState(false);
+  const [showGenerateButton, setShowGenerateButton] = useState(false);
 
   // These would be passed from the previous page
   const sourceLanguage = new URLSearchParams(window.location.search).get('source') || "en";
@@ -126,24 +127,29 @@ const TranslationSession = () => {
   const handleSliderChange = (value: number[]) => {
     setEndSessionValue(value);
     
-    // If slider reaches 100, start generating summary and then end the session
+    // If slider reaches 100, show the Generate Summary button
     if (value[0] === 100) {
-      setIsGeneratingSummary(true);
-      toast({
-        title: "Generating summary...",
-        description: "Please wait while we prepare your session summary.",
-      });
-      
-      // Simulate generating a summary (would be replaced with actual API call)
-      setTimeout(() => {
-        setIsGeneratingSummary(false);
-        toast({
-          title: "Summary generated",
-          description: "Your session summary is ready.",
-        });
-        navigate("/");
-      }, 2000);
+      setShowGenerateButton(true);
+      setEndSessionValue([0]); // Reset slider
     }
+  };
+
+  const handleGenerateSummary = () => {
+    setIsGeneratingSummary(true);
+    toast({
+      title: "Generating summary...",
+      description: "Please wait while we prepare your session summary.",
+    });
+    
+    // Simulate generating a summary (would be replaced with actual API call)
+    setTimeout(() => {
+      setIsGeneratingSummary(false);
+      toast({
+        title: "Summary generated",
+        description: "Your session summary is ready.",
+      });
+      navigate("/");
+    }, 2000);
   };
 
   // Reset slider value when released if not at 100
@@ -221,29 +227,40 @@ const TranslationSession = () => {
         
         {/* Bottom area with mic button and end session slider */}
         <div className="flex flex-col gap-4">
-          {/* Unlock-style slider for ending session - now shorter */}
+          {/* End session controls */}
           <div className="bg-white p-3 rounded-lg shadow-sm flex justify-center">
-            <div className="relative flex items-center w-64">
-              <LockOpen className="absolute left-2 h-5 w-5 text-red-500 z-10" />
-              <div className="flex-1">
-                <Slider
-                  id="end-session-slider"
-                  value={endSessionValue}
-                  min={0}
-                  max={100}
-                  step={1}
-                  onValueChange={handleSliderChange}
-                  onValueCommit={handleSliderReleased}
-                  onMouseDown={() => setIsSliderActive(true)}
-                  onTouchStart={() => setIsSliderActive(true)}
-                  className="w-full"
-                  disabled={isGeneratingSummary}
-                />
+            {!showGenerateButton ? (
+              <div className="relative flex items-center w-64">
+                <LockOpen className="absolute left-2 h-5 w-5 text-red-500 z-10" />
+                <div className="flex-1">
+                  <Slider
+                    id="end-session-slider"
+                    value={endSessionValue}
+                    min={0}
+                    max={100}
+                    step={1}
+                    onValueChange={handleSliderChange}
+                    onValueCommit={handleSliderReleased}
+                    onMouseDown={() => setIsSliderActive(true)}
+                    onTouchStart={() => setIsSliderActive(true)}
+                    className="w-full"
+                    disabled={isGeneratingSummary}
+                  />
+                </div>
+                <div className="flex items-center ml-2">
+                  <span className="text-sm font-medium text-red-500 mr-1">End</span>
+                  <ArrowRight className="h-4 w-4 text-red-500" />
+                </div>
               </div>
-              <span className="ml-2 text-sm font-medium text-red-500">
-                {isGeneratingSummary ? "Generating..." : "End"}
-              </span>
-            </div>
+            ) : (
+              <Button
+                onClick={handleGenerateSummary}
+                disabled={isGeneratingSummary}
+                className="w-64 bg-red-500 hover:bg-red-600 text-white"
+              >
+                {isGeneratingSummary ? "Generating..." : "Generate Summary"}
+              </Button>
+            )}
           </div>
           
           {/* Mic button centered */}
