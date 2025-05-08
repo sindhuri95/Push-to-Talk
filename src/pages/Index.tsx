@@ -1,8 +1,7 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Settings, Globe } from "lucide-react";
+import { Settings, Globe, ArrowLeftRight } from "lucide-react";
 import SettingsDialog from '@/components/SettingsDialog';
 import LanguageSelector from '@/components/LanguageSelector';
 
@@ -70,9 +69,7 @@ const Index = () => {
               
               <div className="flex justify-center items-center">
                 <div className="w-12 h-12 rounded-full bg-healthcare-light flex items-center justify-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-healthcare-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 8l3-3 3 3m0 8l-3 3-3-3" />
-                  </svg>
+                  <ArrowLeftRight className="h-6 w-6 text-healthcare-primary" />
                 </div>
               </div>
               
