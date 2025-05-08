@@ -162,6 +162,18 @@ const TranslationSession = () => {
 
       {/* Main content */}
       <main className="flex-1 container max-w-4xl mx-auto px-4 py-8 flex flex-col">
+        {/* End Session button moved to top left of main content */}
+        <div className="mb-4 self-start">
+          <Button
+            onClick={endSession}
+            variant="outline"
+            className="bg-white border-red-500 text-red-500 hover:bg-red-50"
+          >
+            <SquareX className="mr-2 h-5 w-5" />
+            End Session
+          </Button>
+        </div>
+        
         {/* Transcription area */}
         <Card className="flex-1 mb-6 overflow-y-auto max-h-[calc(100vh-300px)] p-4">
           {doctorTranscriptions.length === 0 && patientTranscriptions.length === 0 ? (
@@ -196,21 +208,8 @@ const TranslationSession = () => {
           )}
         </Card>
         
-        {/* Action buttons - Mic in center, End Session at top right */}
-        <div className="flex justify-center relative">
-          {/* End Session button positioned at top right */}
-          <div className="absolute right-0 top-[-70px]">
-            <Button
-              onClick={endSession}
-              variant="outline"
-              className="bg-white border-red-500 text-red-500 hover:bg-red-50"
-            >
-              <SquareX className="mr-2 h-5 w-5" />
-              End Session
-            </Button>
-          </div>
-          
-          {/* Mic button centered */}
+        {/* Mic button centered */}
+        <div className="flex justify-center">
           <Button
             onClick={toggleListening}
             className={`rounded-full h-16 w-16 p-0 flex items-center justify-center ${
