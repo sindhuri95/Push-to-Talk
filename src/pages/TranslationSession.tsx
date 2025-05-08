@@ -1,8 +1,8 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Mic, MicOff, SquareX } from "lucide-react";
+import { Mic, MicOff, SquareX, Clock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 
@@ -13,10 +13,27 @@ const TranslationSession = () => {
   const [doctorTranscriptions, setDoctorTranscriptions] = useState<{ source: string; target: string }[]>([]);
   const [patientTranscriptions, setPatientTranscriptions] = useState<{ source: string; target: string }[]>([]);
   const [currentSpeaker, setCurrentSpeaker] = useState<"doctor" | "patient">("doctor");
+  const [elapsedTime, setElapsedTime] = useState(0);
 
   // These would be passed from the previous page
   const sourceLanguage = new URLSearchParams(window.location.search).get('source') || "en";
   const targetLanguage = new URLSearchParams(window.location.search).get('target') || "es";
+
+  // Timer effect
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setElapsedTime(prevTime => prevTime + 1);
+    }, 1000);
+    
+    return () => clearInterval(timer);
+  }, []);
+
+  // Format elapsed time as MM:SS
+  const formatTime = (seconds: number): string => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
 
   // Get language names for display
   const getLanguageName = (code: string): string => {
@@ -121,7 +138,10 @@ const TranslationSession = () => {
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div className="flex items-center space-x-2">
             <h1 className="text-xl font-bold text-healthcare-dark">Curalingo</h1>
-            <span className="text-sm px-3 py-1 bg-healthcare-light rounded-full">Live Session</span>
+            <div className="flex items-center space-x-1 px-3 py-1 bg-healthcare-light rounded-full">
+              <Clock className="h-4 w-4 text-healthcare-dark" />
+              <span className="text-sm">{formatTime(elapsedTime)}</span>
+            </div>
           </div>
           
           <div className="flex items-center space-x-4">
@@ -142,15 +162,6 @@ const TranslationSession = () => {
 
       {/* Main content */}
       <main className="flex-1 container max-w-4xl mx-auto px-4 py-8 flex flex-col">
-        {/* Current speaker indicator */}
-        <div className="mb-6 text-center">
-          <div className="inline-flex items-center px-4 py-2 rounded-full bg-white shadow">
-            <span className="text-healthcare-primary font-medium">
-              Now speaking: {currentSpeaker === "doctor" ? "Doctor" : "Patient"}
-            </span>
-          </div>
-        </div>
-        
         {/* Transcription area */}
         <Card className="flex-1 mb-6 overflow-y-auto max-h-[calc(100vh-300px)] p-4">
           {doctorTranscriptions.length === 0 && patientTranscriptions.length === 0 ? (
@@ -185,38 +196,36 @@ const TranslationSession = () => {
           )}
         </Card>
         
-        {/* Mic button and end session button */}
-        <div className="flex flex-col items-center space-y-2">
-          <div className="text-sm text-gray-500">
-            {currentSpeaker === "doctor" ? "Doctor speaking" : "Patient speaking"}
-          </div>
-          <div className="flex items-center space-x-4">
+        {/* Action buttons - Mic in center, End Session at top right */}
+        <div className="flex justify-center relative">
+          {/* End Session button positioned at top right */}
+          <div className="absolute right-0 top-[-70px]">
             <Button
               onClick={endSession}
               variant="outline"
               className="bg-white border-red-500 text-red-500 hover:bg-red-50"
-              size="lg"
             >
               <SquareX className="mr-2 h-5 w-5" />
               End Session
             </Button>
-            
-            <Button
-              onClick={toggleListening}
-              className={`rounded-full h-16 w-16 p-0 flex items-center justify-center ${
-                isListening 
-                  ? "bg-red-500 hover:bg-red-600" 
-                  : "bg-healthcare-primary hover:bg-healthcare-dark"
-              }`}
-              size="icon"
-            >
-              {isListening ? (
-                <MicOff className="h-8 w-8" />
-              ) : (
-                <Mic className="h-8 w-8" />
-              )}
-            </Button>
           </div>
+          
+          {/* Mic button centered */}
+          <Button
+            onClick={toggleListening}
+            className={`rounded-full h-16 w-16 p-0 flex items-center justify-center ${
+              isListening 
+                ? "bg-red-500 hover:bg-red-600" 
+                : "bg-healthcare-primary hover:bg-healthcare-dark"
+            }`}
+            size="icon"
+          >
+            {isListening ? (
+              <MicOff className="h-8 w-8" />
+            ) : (
+              <Mic className="h-8 w-8" />
+            )}
+          </Button>
         </div>
       </main>
     </div>
