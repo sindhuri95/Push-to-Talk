@@ -5,8 +5,10 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Settings, Globe, ArrowLeftRight, Loader } from "lucide-react";
 import SettingsDialog from '@/components/SettingsDialog';
 import LanguageSelector from '@/components/LanguageSelector';
+import { useNavigate } from 'react-router-dom';
 
 const Index = () => {
+  const navigate = useNavigate();
   const [sourceLanguage, setSourceLanguage] = useState("en");
   const [targetLanguage, setTargetLanguage] = useState("es");
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -23,7 +25,8 @@ const Index = () => {
     // This would typically be replaced with a real API call
     // For now, we'll just simulate a delay
     setTimeout(() => {
-      // This would be where we navigate to the session page or update UI
+      // Navigate to the translation session page with language parameters
+      navigate(`/session?source=${sourceLanguage}&target=${targetLanguage}`);
       setIsLoading(false);
     }, 2000);
   };
