@@ -2,9 +2,10 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Mic, MicOff, SquareX, Clock } from "lucide-react";
+import { Mic, MicOff, Clock, SlidersHorizontal } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
+import { Slider } from "@/components/ui/slider";
 
 const TranslationSession = () => {
   const navigate = useNavigate();
@@ -14,6 +15,8 @@ const TranslationSession = () => {
   const [patientTranscriptions, setPatientTranscriptions] = useState<{ source: string; target: string }[]>([]);
   const [currentSpeaker, setCurrentSpeaker] = useState<"doctor" | "patient">("doctor");
   const [elapsedTime, setElapsedTime] = useState(0);
+  const [endSessionValue, setEndSessionValue] = useState([0]);
+  const [isSliderActive, setIsSliderActive] = useState(false);
 
   // These would be passed from the previous page
   const sourceLanguage = new URLSearchParams(window.location.search).get('source') || "en";
@@ -120,14 +123,24 @@ const TranslationSession = () => {
     }
   };
 
-  const endSession = () => {
-    // Ask for confirmation before ending session
-    if (window.confirm("Are you sure you want to end this translation session?")) {
+  const handleSliderChange = (value: number[]) => {
+    setEndSessionValue(value);
+    
+    // If slider reaches 100, end the session
+    if (value[0] === 100) {
       toast({
         title: "Session ended",
         description: "Translation session has been completed.",
       });
       navigate("/");
+    }
+  };
+
+  // Reset slider value when released if not at 100
+  const handleSliderReleased = () => {
+    if (endSessionValue[0] < 100) {
+      setEndSessionValue([0]);
+      setIsSliderActive(false);
     }
   };
 
@@ -162,16 +175,28 @@ const TranslationSession = () => {
 
       {/* Main content */}
       <main className="flex-1 container max-w-4xl mx-auto px-4 py-8 flex flex-col">
-        {/* End Session button moved to top left of main content */}
-        <div className="mb-4 self-start">
-          <Button
-            onClick={endSession}
-            variant="outline"
-            className="bg-white border-red-500 text-red-500 hover:bg-red-50"
-          >
-            <SquareX className="mr-2 h-5 w-5" />
-            End Session
-          </Button>
+        {/* End Session slider in header area */}
+        <div className="mb-6 bg-white p-4 rounded-lg shadow-sm">
+          <div className="flex items-center gap-3">
+            <SlidersHorizontal className="h-5 w-5 text-red-500" />
+            <div className="flex-1">
+              <label htmlFor="end-session-slider" className="block text-sm font-medium text-red-500 mb-1">
+                Slide to end session
+              </label>
+              <Slider
+                id="end-session-slider"
+                value={endSessionValue}
+                min={0}
+                max={100}
+                step={1}
+                onValueChange={handleSliderChange}
+                onValueCommit={handleSliderReleased}
+                onMouseDown={() => setIsSliderActive(true)}
+                onTouchStart={() => setIsSliderActive(true)}
+                className="w-full"
+              />
+            </div>
+          </div>
         </div>
         
         {/* Transcription area */}
