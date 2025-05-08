@@ -227,17 +227,36 @@ const TranslationSession = () => {
         
         {/* Bottom area with mic button and end session slider */}
         <div className="flex flex-col gap-4">
+          {/* Mic button centered - moved above the slider */}
+          <div className="flex justify-center">
+            <Button
+              onClick={toggleListening}
+              className={`rounded-full h-16 w-16 p-0 flex items-center justify-center ${
+                isListening 
+                  ? "bg-red-500 hover:bg-red-600" 
+                  : "bg-healthcare-primary hover:bg-healthcare-dark"
+              }`}
+              size="icon"
+            >
+              {isListening ? (
+                <MicOff className="h-8 w-8" />
+              ) : (
+                <Mic className="h-8 w-8" />
+              )}
+            </Button>
+          </div>
+          
           {/* End session controls */}
           <div className="bg-white p-3 rounded-lg shadow-sm flex justify-center">
             {!showGenerateButton ? (
-              <div className="relative w-64 h-14 bg-black rounded-full overflow-hidden shadow-lg flex items-center">
+              <div className="relative w-64 h-14 bg-gradient-to-r from-blue-50 to-blue-100 rounded-full overflow-hidden shadow-lg flex items-center border border-gray-200">
                 <div 
-                  className="absolute left-0 top-0 bottom-0 flex items-center justify-center z-10 w-14 h-14 bg-white rounded-full"
+                  className="absolute left-0 top-0 bottom-0 flex items-center justify-center z-10 w-14 h-14 bg-white rounded-full shadow-md"
                   style={{ left: `calc(${endSessionValue[0]}% - ${endSessionValue[0] > 0 ? 56 * (endSessionValue[0]/100) : 0}px)` }}
                 >
                   <CircleArrowRight className="h-8 w-8 text-healthcare-primary" />
                 </div>
-                <div className="flex-1 text-center text-white font-medium ml-16">
+                <div className="flex-1 text-center text-healthcare-dark font-medium ml-16">
                   Slide to End Session
                 </div>
                 <Slider
@@ -258,30 +277,11 @@ const TranslationSession = () => {
               <Button
                 onClick={handleGenerateSummary}
                 disabled={isGeneratingSummary}
-                className="w-64 bg-red-500 hover:bg-red-600 text-white"
+                className="w-64 bg-healthcare-primary hover:bg-healthcare-dark text-white"
               >
                 {isGeneratingSummary ? "Generating..." : "Generate Summary"}
               </Button>
             )}
-          </div>
-          
-          {/* Mic button centered */}
-          <div className="flex justify-center">
-            <Button
-              onClick={toggleListening}
-              className={`rounded-full h-16 w-16 p-0 flex items-center justify-center ${
-                isListening 
-                  ? "bg-red-500 hover:bg-red-600" 
-                  : "bg-healthcare-primary hover:bg-healthcare-dark"
-              }`}
-              size="icon"
-            >
-              {isListening ? (
-                <MicOff className="h-8 w-8" />
-              ) : (
-                <Mic className="h-8 w-8" />
-              )}
-            </Button>
           </div>
         </div>
       </main>
