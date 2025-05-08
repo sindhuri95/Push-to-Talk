@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -222,9 +221,9 @@ const TranslationSession = () => {
         
         {/* Bottom area with mic button and end session slider */}
         <div className="flex flex-col gap-4">
-          {/* Unlock-style slider for ending session */}
-          <div className="bg-white p-3 rounded-lg shadow-sm">
-            <div className="relative flex items-center">
+          {/* Unlock-style slider for ending session - now shorter */}
+          <div className="bg-white p-3 rounded-lg shadow-sm flex justify-center">
+            <div className="relative flex items-center w-64">
               <LockOpen className="absolute left-2 h-5 w-5 text-red-500 z-10" />
               <div className="flex-1">
                 <Slider
@@ -242,7 +241,7 @@ const TranslationSession = () => {
                 />
               </div>
               <span className="ml-2 text-sm font-medium text-red-500">
-                {isGeneratingSummary ? "Generating summary..." : "Slide to end & generate summary"}
+                {isGeneratingSummary ? "Generating..." : "End"}
               </span>
             </div>
           </div>
