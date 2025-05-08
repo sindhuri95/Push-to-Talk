@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Mic, MicOff, Clock, SlidersHorizontal } from "lucide-react";
+import { Mic, MicOff, Clock, SlidersHorizontal, LockOpen } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { Slider } from "@/components/ui/slider";
@@ -17,6 +17,7 @@ const TranslationSession = () => {
   const [elapsedTime, setElapsedTime] = useState(0);
   const [endSessionValue, setEndSessionValue] = useState([0]);
   const [isSliderActive, setIsSliderActive] = useState(false);
+  const [isGeneratingSummary, setIsGeneratingSummary] = useState(false);
 
   // These would be passed from the previous page
   const sourceLanguage = new URLSearchParams(window.location.search).get('source') || "en";
@@ -126,13 +127,23 @@ const TranslationSession = () => {
   const handleSliderChange = (value: number[]) => {
     setEndSessionValue(value);
     
-    // If slider reaches 100, end the session
+    // If slider reaches 100, start generating summary and then end the session
     if (value[0] === 100) {
+      setIsGeneratingSummary(true);
       toast({
-        title: "Session ended",
-        description: "Translation session has been completed.",
+        title: "Generating summary...",
+        description: "Please wait while we prepare your session summary.",
       });
-      navigate("/");
+      
+      // Simulate generating a summary (would be replaced with actual API call)
+      setTimeout(() => {
+        setIsGeneratingSummary(false);
+        toast({
+          title: "Summary generated",
+          description: "Your session summary is ready.",
+        });
+        navigate("/");
+      }, 2000);
     }
   };
 
@@ -175,30 +186,6 @@ const TranslationSession = () => {
 
       {/* Main content */}
       <main className="flex-1 container max-w-4xl mx-auto px-4 py-8 flex flex-col">
-        {/* End Session slider in header area */}
-        <div className="mb-6 bg-white p-4 rounded-lg shadow-sm">
-          <div className="flex items-center gap-3">
-            <SlidersHorizontal className="h-5 w-5 text-red-500" />
-            <div className="flex-1">
-              <label htmlFor="end-session-slider" className="block text-sm font-medium text-red-500 mb-1">
-                Slide to end session
-              </label>
-              <Slider
-                id="end-session-slider"
-                value={endSessionValue}
-                min={0}
-                max={100}
-                step={1}
-                onValueChange={handleSliderChange}
-                onValueCommit={handleSliderReleased}
-                onMouseDown={() => setIsSliderActive(true)}
-                onTouchStart={() => setIsSliderActive(true)}
-                className="w-full"
-              />
-            </div>
-          </div>
-        </div>
-        
         {/* Transcription area */}
         <Card className="flex-1 mb-6 overflow-y-auto max-h-[calc(100vh-300px)] p-4">
           {doctorTranscriptions.length === 0 && patientTranscriptions.length === 0 ? (
@@ -233,23 +220,51 @@ const TranslationSession = () => {
           )}
         </Card>
         
-        {/* Mic button centered */}
-        <div className="flex justify-center">
-          <Button
-            onClick={toggleListening}
-            className={`rounded-full h-16 w-16 p-0 flex items-center justify-center ${
-              isListening 
-                ? "bg-red-500 hover:bg-red-600" 
-                : "bg-healthcare-primary hover:bg-healthcare-dark"
-            }`}
-            size="icon"
-          >
-            {isListening ? (
-              <MicOff className="h-8 w-8" />
-            ) : (
-              <Mic className="h-8 w-8" />
-            )}
-          </Button>
+        {/* Bottom area with mic button and end session slider */}
+        <div className="flex flex-col gap-4">
+          {/* Unlock-style slider for ending session */}
+          <div className="bg-white p-3 rounded-lg shadow-sm">
+            <div className="relative flex items-center">
+              <LockOpen className="absolute left-2 h-5 w-5 text-red-500 z-10" />
+              <div className="flex-1">
+                <Slider
+                  id="end-session-slider"
+                  value={endSessionValue}
+                  min={0}
+                  max={100}
+                  step={1}
+                  onValueChange={handleSliderChange}
+                  onValueCommit={handleSliderReleased}
+                  onMouseDown={() => setIsSliderActive(true)}
+                  onTouchStart={() => setIsSliderActive(true)}
+                  className="w-full"
+                  disabled={isGeneratingSummary}
+                />
+              </div>
+              <span className="ml-2 text-sm font-medium text-red-500">
+                {isGeneratingSummary ? "Generating summary..." : "Slide to end & generate summary"}
+              </span>
+            </div>
+          </div>
+          
+          {/* Mic button centered */}
+          <div className="flex justify-center">
+            <Button
+              onClick={toggleListening}
+              className={`rounded-full h-16 w-16 p-0 flex items-center justify-center ${
+                isListening 
+                  ? "bg-red-500 hover:bg-red-600" 
+                  : "bg-healthcare-primary hover:bg-healthcare-dark"
+              }`}
+              size="icon"
+            >
+              {isListening ? (
+                <MicOff className="h-8 w-8" />
+              ) : (
+                <Mic className="h-8 w-8" />
+              )}
+            </Button>
+          </div>
         </div>
       </main>
     </div>
