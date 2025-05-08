@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Mic, MicOff, Flag, SquareX } from "lucide-react";
+import { Mic, MicOff, SquareX } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 
@@ -12,7 +12,7 @@ const TranslationSession = () => {
   const [isListening, setIsListening] = useState(false);
   const [doctorTranscriptions, setDoctorTranscriptions] = useState<{ source: string; target: string }[]>([]);
   const [patientTranscriptions, setPatientTranscriptions] = useState<{ source: string; target: string }[]>([]);
-  const [isSpeaker, setIsSpeaker] = useState<"doctor" | "patient">("doctor");
+  const [currentSpeaker, setCurrentSpeaker] = useState<"doctor" | "patient">("doctor");
 
   // These would be passed from the previous page
   const sourceLanguage = new URLSearchParams(window.location.search).get('source') || "en";
@@ -75,38 +75,32 @@ const TranslationSession = () => {
     // Simulate transcription after a short delay when listening starts
     if (!isListening) {
       toast({
-        title: `Now listening for ${isSpeaker === "doctor" ? "doctor" : "patient"} speech`,
-        description: `Speak now in ${getLanguageName(sourceLanguage)}`,
+        title: `Now listening for ${currentSpeaker} speech`,
+        description: `Speak now in ${getLanguageName(currentSpeaker === "doctor" ? sourceLanguage : targetLanguage)}`,
       });
       
       // Simulate receiving transcription
       setTimeout(() => {
         const newTranscription = {
-          source: isSpeaker === "doctor" 
+          source: currentSpeaker === "doctor" 
             ? "Hello, how have you been feeling this past week?" 
             : "Me he sentido un poco mejor, pero todavía tengo dolor.",
-          target: isSpeaker === "doctor" 
+          target: currentSpeaker === "doctor" 
             ? "Hola, ¿cómo te has sentido esta última semana?" 
             : "I've been feeling a bit better, but I still have pain."
         };
         
-        if (isSpeaker === "doctor") {
+        if (currentSpeaker === "doctor") {
           setDoctorTranscriptions(prev => [...prev, newTranscription]);
+          setCurrentSpeaker("patient"); // Automatically switch to patient after doctor speaks
         } else {
           setPatientTranscriptions(prev => [...prev, newTranscription]);
+          setCurrentSpeaker("doctor"); // Automatically switch to doctor after patient speaks
         }
         
         setIsListening(false);
       }, 3000);
     }
-  };
-
-  const switchSpeaker = () => {
-    setIsSpeaker(prev => prev === "doctor" ? "patient" : "doctor");
-    toast({
-      title: `Switched to ${isSpeaker === "doctor" ? "patient" : "doctor"} mode`,
-      description: `Now recording for ${isSpeaker === "doctor" ? "patient" : "doctor"}`,
-    });
   };
 
   const endSession = () => {
@@ -134,11 +128,13 @@ const TranslationSession = () => {
             <div className="flex items-center">
               <span className="text-lg mr-2">{getFlagEmoji(sourceLanguage)}</span>
               <span className="font-medium">{getLanguageName(sourceLanguage)}</span>
+              <span className="text-xs ml-1">(Doctor)</span>
             </div>
             <span className="text-gray-400">→</span>
             <div className="flex items-center">
               <span className="text-lg mr-2">{getFlagEmoji(targetLanguage)}</span>
               <span className="font-medium">{getLanguageName(targetLanguage)}</span>
+              <span className="text-xs ml-1">(Patient)</span>
             </div>
           </div>
         </div>
@@ -147,25 +143,11 @@ const TranslationSession = () => {
       {/* Main content */}
       <main className="flex-1 container max-w-4xl mx-auto px-4 py-8 flex flex-col">
         {/* Current speaker indicator */}
-        <div className="mb-6 flex justify-center">
+        <div className="mb-6 text-center">
           <div className="inline-flex items-center px-4 py-2 rounded-full bg-white shadow">
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className={`rounded-full ${isSpeaker === "doctor" ? "bg-healthcare-primary text-white" : ""}`}
-              onClick={() => setIsSpeaker("doctor")}
-            >
-              Doctor
-            </Button>
-            <span className="mx-2">|</span>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className={`rounded-full ${isSpeaker === "patient" ? "bg-healthcare-primary text-white" : ""}`}
-              onClick={() => setIsSpeaker("patient")}
-            >
-              Patient
-            </Button>
+            <span className="text-healthcare-primary font-medium">
+              Now speaking: {currentSpeaker === "doctor" ? "Doctor" : "Patient"}
+            </span>
           </div>
         </div>
         
@@ -203,10 +185,10 @@ const TranslationSession = () => {
           )}
         </Card>
         
-        {/* Mic button */}
+        {/* Mic button and end session button */}
         <div className="flex flex-col items-center space-y-2">
           <div className="text-sm text-gray-500">
-            {isSpeaker === "doctor" ? "Doctor speaking" : "Patient speaking"}
+            {currentSpeaker === "doctor" ? "Doctor speaking" : "Patient speaking"}
           </div>
           <div className="flex items-center space-x-4">
             <Button
@@ -233,15 +215,6 @@ const TranslationSession = () => {
               ) : (
                 <Mic className="h-8 w-8" />
               )}
-            </Button>
-            
-            <Button
-              onClick={switchSpeaker}
-              variant="outline"
-              className="bg-white"
-              size="lg"
-            >
-              Switch to {isSpeaker === "doctor" ? "Patient" : "Doctor"}
             </Button>
           </div>
         </div>
