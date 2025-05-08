@@ -15,9 +15,9 @@ const TranslationSession = () => {
   const [currentSpeaker, setCurrentSpeaker] = useState<"doctor" | "patient">("doctor");
   const [elapsedTime, setElapsedTime] = useState(0);
   const [endSessionValue, setEndSessionValue] = useState([0]);
-  const [isSliderActive, setIsSliderActive] = useState(false);
-  const [isGeneratingSummary, setIsGeneratingSummary] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
   const [showGenerateButton, setShowGenerateButton] = useState(false);
+  const [isGeneratingSummary, setIsGeneratingSummary] = useState(false);
 
   // These would be passed from the previous page
   const sourceLanguage = new URLSearchParams(window.location.search).get('source') || "en";
@@ -31,6 +31,16 @@ const TranslationSession = () => {
     
     return () => clearInterval(timer);
   }, []);
+
+  // Effect to handle slider completion
+  useEffect(() => {
+    if (endSessionValue[0] >= 90 && isDragging) {
+      // Automatically complete to 100 when user gets close
+      setEndSessionValue([100]);
+      setShowGenerateButton(true);
+      setIsDragging(false);
+    }
+  }, [endSessionValue, isDragging]);
 
   // Format elapsed time as MM:SS
   const formatTime = (seconds: number): string => {
@@ -127,10 +137,9 @@ const TranslationSession = () => {
   const handleSliderChange = (value: number[]) => {
     setEndSessionValue(value);
     
-    // If slider reaches 100, show the Generate Summary button
+    // Show the Generate Summary button if the slider reaches 100
     if (value[0] === 100) {
       setShowGenerateButton(true);
-      setEndSessionValue([0]); // Reset slider
     }
   };
 
@@ -152,12 +161,16 @@ const TranslationSession = () => {
     }, 2000);
   };
 
-  // Reset slider value when released if not at 100
-  const handleSliderReleased = () => {
-    if (endSessionValue[0] < 100) {
+  // Handle mouse/touch events to improve slider UX
+  const handleDragStart = () => {
+    setIsDragging(true);
+  };
+
+  const handleDragEnd = () => {
+    if (endSessionValue[0] < 90) {
       setEndSessionValue([0]);
-      setIsSliderActive(false);
     }
+    setIsDragging(false);
   };
 
   return (
@@ -251,7 +264,7 @@ const TranslationSession = () => {
             {!showGenerateButton ? (
               <div className="relative w-64 h-14 bg-gradient-to-r from-blue-50 to-blue-100 rounded-full overflow-hidden shadow-lg flex items-center border border-gray-200">
                 <div 
-                  className="absolute left-0 top-0 bottom-0 flex items-center justify-center z-10 w-14 h-14 bg-white rounded-full shadow-md"
+                  className={`absolute left-0 top-0 bottom-0 flex items-center justify-center z-10 w-14 h-14 bg-white rounded-full shadow-md transition-transform ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
                   style={{ left: `calc(${endSessionValue[0]}% - ${endSessionValue[0] > 0 ? 56 * (endSessionValue[0]/100) : 0}px)` }}
                 >
                   <CircleArrowRight className="h-8 w-8 text-healthcare-primary" />
@@ -266,9 +279,9 @@ const TranslationSession = () => {
                   max={100}
                   step={1}
                   onValueChange={handleSliderChange}
-                  onValueCommit={handleSliderReleased}
-                  onMouseDown={() => setIsSliderActive(true)}
-                  onTouchStart={() => setIsSliderActive(true)}
+                  onValueCommit={handleDragEnd}
+                  onMouseDown={handleDragStart}
+                  onTouchStart={handleDragStart}
                   className="absolute top-0 left-0 right-0 bottom-0 opacity-0 w-full cursor-pointer"
                   disabled={isGeneratingSummary}
                 />
