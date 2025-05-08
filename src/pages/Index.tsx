@@ -1,7 +1,8 @@
+
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Settings, Globe, ArrowLeftRight } from "lucide-react";
+import { Settings, Globe, ArrowLeftRight, Loader } from "lucide-react";
 import SettingsDialog from '@/components/SettingsDialog';
 import LanguageSelector from '@/components/LanguageSelector';
 
@@ -10,10 +11,21 @@ const Index = () => {
   const [targetLanguage, setTargetLanguage] = useState("es");
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [autoDetect, setAutoDetect] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleStartSession = () => {
-    // This will be implemented in future iterations
+    // Set loading state to true when button is clicked
+    setIsLoading(true);
+    
+    // Simulate configuring session
     console.log("Starting session with", { sourceLanguage, targetLanguage });
+    
+    // This would typically be replaced with a real API call
+    // For now, we'll just simulate a delay
+    setTimeout(() => {
+      // This would be where we navigate to the session page or update UI
+      setIsLoading(false);
+    }, 2000);
   };
 
   return (
@@ -86,8 +98,16 @@ const Index = () => {
             <Button 
               className="w-full py-6 text-lg bg-healthcare-primary hover:bg-healthcare-dark transition-colors"
               onClick={handleStartSession}
+              disabled={isLoading}
             >
-              Begin New Session
+              {isLoading ? (
+                <span className="flex items-center">
+                  <Loader className="h-5 w-5 mr-2 animate-spin" />
+                  Configuring Session...
+                </span>
+              ) : (
+                'Begin New Session'
+              )}
             </Button>
           </CardFooter>
         </Card>
