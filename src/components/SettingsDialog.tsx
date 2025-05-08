@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
+import { Textarea } from "@/components/ui/textarea";
 
 interface SettingsDialogProps {
   open: boolean;
@@ -13,9 +14,8 @@ interface SettingsDialogProps {
 
 const SettingsDialog = ({ open, onOpenChange }: SettingsDialogProps) => {
   const [autoDetect, setAutoDetect] = useState(false);
-  const [speakTranslation, setSpeakTranslation] = useState(true);
   const [speakingSpeed, setSpeakingSpeed] = useState([1.0]);
-  const [saveHistory, setSaveHistory] = useState(true);
+  const [initialGreeting, setInitialGreeting] = useState('');
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -40,21 +40,6 @@ const SettingsDialog = ({ open, onOpenChange }: SettingsDialogProps) => {
               id="auto-detect"
               checked={autoDetect}
               onCheckedChange={setAutoDetect}
-            />
-          </div>
-          
-          {/* Text to speech */}
-          <div className="flex items-center justify-between">
-            <div className="space-y-0.5">
-              <Label htmlFor="speak-translation">Speak translations</Label>
-              <p className="text-sm text-muted-foreground">
-                Read translations aloud automatically
-              </p>
-            </div>
-            <Switch
-              id="speak-translation"
-              checked={speakTranslation}
-              onCheckedChange={setSpeakTranslation}
             />
           </div>
           
@@ -83,18 +68,21 @@ const SettingsDialog = ({ open, onOpenChange }: SettingsDialogProps) => {
             </div>
           </div>
           
-          {/* Save history */}
-          <div className="flex items-center justify-between">
+          {/* Initial Greeting */}
+          <div className="space-y-3">
             <div className="space-y-0.5">
-              <Label htmlFor="save-history">Save conversation history</Label>
+              <Label htmlFor="initial-greeting">Initial Greeting</Label>
               <p className="text-sm text-muted-foreground">
-                Keep a record of your translation sessions
+                Enter a custom greeting or introduction for the session
               </p>
             </div>
-            <Switch
-              id="save-history"
-              checked={saveHistory}
-              onCheckedChange={setSaveHistory}
+            <Textarea
+              id="initial-greeting"
+              placeholder="E.g., I am a nurse visiting John who only speaks Spanish. Greet the patient and ask how he has been feeling for the past week."
+              value={initialGreeting}
+              onChange={(e) => setInitialGreeting(e.target.value)}
+              rows={4}
+              className="resize-none"
             />
           </div>
         </div>

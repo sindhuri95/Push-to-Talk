@@ -10,6 +10,7 @@ const Index = () => {
   const [sourceLanguage, setSourceLanguage] = useState("en");
   const [targetLanguage, setTargetLanguage] = useState("es");
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [autoDetect, setAutoDetect] = useState(false);
 
   const handleStartSession = () => {
     // This will be implemented in future iterations
@@ -50,11 +51,21 @@ const Index = () => {
             {/* Language Selection */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
               <div className="col-span-1">
-                <LanguageSelector
-                  value={sourceLanguage}
-                  onChange={setSourceLanguage}
-                  label="Source Language"
-                />
+                {!autoDetect && (
+                  <LanguageSelector
+                    value={sourceLanguage}
+                    onChange={setSourceLanguage}
+                    label="Source Language"
+                  />
+                )}
+                {autoDetect && (
+                  <div className="flex flex-col space-y-2">
+                    <span className="text-sm font-medium">Source Language</span>
+                    <div className="border border-input px-3 py-2 rounded-md bg-muted/30">
+                      <span className="text-sm text-muted-foreground">Auto-detect enabled</span>
+                    </div>
+                  </div>
+                )}
               </div>
               
               <div className="flex justify-center items-center">
