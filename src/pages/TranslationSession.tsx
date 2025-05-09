@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Mic, MicOff, Clock, ArrowRight, CircleArrowRight, Save } from "lucide-react";
+import { Mic, MicOff, Clock, ArrowRight, CircleArrowRight, Save, SkipBack } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { Slider } from "@/components/ui/slider";
@@ -29,6 +29,9 @@ const TranslationSession = () => {
     assessment: "",
     plan: ""
   });
+
+  // Audio replay state
+  const [playingAudio, setPlayingAudio] = useState<string | null>(null);
 
   // These would be passed from the previous page
   const sourceLanguage = new URLSearchParams(window.location.search).get('source') || "en";
@@ -154,6 +157,22 @@ const TranslationSession = () => {
     }
   };
 
+  const handleReplayAudio = (type: string, index: number) => {
+    const audioId = `${type}-${index}`;
+    setPlayingAudio(audioId);
+    
+    // Simulate audio playback
+    toast({
+      title: "Playing audio",
+      description: `Playing ${type === "doctor" ? "doctor" : "patient"} transcription #${index + 1}`,
+    });
+    
+    // Simulate audio finishing after a time
+    setTimeout(() => {
+      setPlayingAudio(null);
+    }, 2000);
+  };
+
   const handleGenerateSummary = () => {
     setIsGeneratingSummary(true);
     toast({
@@ -239,7 +258,21 @@ const TranslationSession = () => {
                     {/* Combine and sort transcriptions chronologically - this is simplified for the example */}
                     {doctorTranscriptions.map((transcript, index) => (
                       <div key={`doctor-${index}`} className="rounded-lg p-4 bg-healthcare-light border-l-4 border-healthcare-primary">
-                        <p className="text-xs font-semibold text-healthcare-primary mb-1">Doctor ({getLanguageName(sourceLanguage)})</p>
+                        <div className="flex items-center justify-between mb-1">
+                          <p className="text-xs font-semibold text-healthcare-primary">Doctor ({getLanguageName(sourceLanguage)})</p>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="h-6 w-6 p-0" 
+                            onClick={() => handleReplayAudio("doctor", index)}
+                            disabled={playingAudio === `doctor-${index}`}
+                          >
+                            <SkipBack 
+                              size={16} 
+                              className={`${playingAudio === `doctor-${index}` ? 'animate-pulse text-healthcare-primary' : 'text-gray-500'}`} 
+                            />
+                          </Button>
+                        </div>
                         <p className="font-medium">{transcript.source}</p>
                         <div className="mt-2 pt-2 border-t border-dashed border-gray-200">
                           <p className="text-xs font-semibold text-healthcare-primary mb-1">Translation ({getLanguageName(targetLanguage)})</p>
@@ -250,7 +283,21 @@ const TranslationSession = () => {
                     
                     {patientTranscriptions.map((transcript, index) => (
                       <div key={`patient-${index}`} className="rounded-lg p-4 bg-amber-50 border-l-4 border-amber-500">
-                        <p className="text-xs font-semibold text-amber-600 mb-1">Patient ({getLanguageName(targetLanguage)})</p>
+                        <div className="flex items-center justify-between mb-1">
+                          <p className="text-xs font-semibold text-amber-600">Patient ({getLanguageName(targetLanguage)})</p>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="h-6 w-6 p-0" 
+                            onClick={() => handleReplayAudio("patient", index)}
+                            disabled={playingAudio === `patient-${index}`}
+                          >
+                            <SkipBack 
+                              size={16} 
+                              className={`${playingAudio === `patient-${index}` ? 'animate-pulse text-amber-600' : 'text-gray-500'}`} 
+                            />
+                          </Button>
+                        </div>
                         <p className="font-medium">{transcript.source}</p>
                         <div className="mt-2 pt-2 border-t border-dashed border-gray-200">
                           <p className="text-xs font-semibold text-amber-600 mb-1">Translation ({getLanguageName(sourceLanguage)})</p>
