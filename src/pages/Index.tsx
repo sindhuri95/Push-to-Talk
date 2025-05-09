@@ -69,12 +69,12 @@ const Index = () => {
                   <LanguageSelector
                     value={sourceLanguage}
                     onChange={setSourceLanguage}
-                    label="Source Language"
+                    label="Provider Language"
                   />
                 )}
                 {autoDetect && (
                   <div className="flex flex-col space-y-2">
-                    <span className="text-sm font-medium">Source Language</span>
+                    <span className="text-sm font-medium">Provider Language</span>
                     <div className="border border-input px-3 py-2 rounded-md bg-muted/30">
                       <span className="text-sm text-muted-foreground">Auto-detect enabled</span>
                     </div>
@@ -92,7 +92,7 @@ const Index = () => {
                 <LanguageSelector
                   value={targetLanguage}
                   onChange={setTargetLanguage}
-                  label="Target Language"
+                  label="Patient Language"
                 />
               </div>
             </div>
