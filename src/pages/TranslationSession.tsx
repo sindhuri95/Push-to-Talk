@@ -284,12 +284,12 @@ const TranslationSession = () => {
                     ))}
                     
                     {patientTranscriptions.map((transcript, index) => (
-                      <div key={`patient-${index}`} className="rounded-lg p-4 bg-amber-50 border-l-4 border-amber-500 mr-4 ml-12 relative">
-                        <div className="absolute -right-3 top-4 w-6 h-6 rounded-full bg-amber-500 flex items-center justify-center text-white text-xs font-bold">
+                      <div key={`patient-${index}`} className="rounded-lg p-4 bg-healthcare-secondary/20 border-l-4 border-healthcare-secondary mr-4 ml-12 relative">
+                        <div className="absolute -right-3 top-4 w-6 h-6 rounded-full bg-healthcare-secondary flex items-center justify-center text-white text-xs font-bold">
                           P
                         </div>
                         <div className="flex items-center justify-between mb-1">
-                          <p className="text-xs font-semibold text-amber-600">Patient ({getLanguageName(targetLanguage)})</p>
+                          <p className="text-xs font-semibold text-healthcare-secondary">Patient ({getLanguageName(targetLanguage)})</p>
                           <Button 
                             variant="ghost" 
                             size="sm" 
@@ -299,13 +299,13 @@ const TranslationSession = () => {
                           >
                             <SkipBack 
                               size={16} 
-                              className={`${playingAudio === `patient-${index}` ? 'animate-pulse text-amber-600' : 'text-gray-500'}`} 
+                              className={`${playingAudio === `patient-${index}` ? 'animate-pulse text-healthcare-secondary' : 'text-gray-500'}`} 
                             />
                           </Button>
                         </div>
                         <p className="font-medium">{transcript.source}</p>
                         <div className="mt-2 pt-2 border-t border-dashed border-gray-200">
-                          <p className="text-xs font-semibold text-amber-600 mb-1">Translation ({getLanguageName(sourceLanguage)})</p>
+                          <p className="text-xs font-semibold text-healthcare-secondary mb-1">Translation ({getLanguageName(sourceLanguage)})</p>
                           <p className="font-medium">{transcript.target}</p>
                         </div>
                       </div>
