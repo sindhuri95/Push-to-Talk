@@ -1,10 +1,12 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Mic, MicOff, Clock, ArrowRight, CircleArrowRight } from "lucide-react";
+import { Mic, MicOff, Clock, ArrowRight, CircleArrowRight, Save } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { Slider } from "@/components/ui/slider";
+import { Textarea } from "@/components/ui/textarea";
 
 const TranslationSession = () => {
   const navigate = useNavigate();
@@ -18,6 +20,14 @@ const TranslationSession = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [showGenerateButton, setShowGenerateButton] = useState(false);
   const [isGeneratingSummary, setIsGeneratingSummary] = useState(false);
+  
+  // SOAP Notes state
+  const [soapNotes, setSoapNotes] = useState({
+    subjective: "",
+    objective: "",
+    assessment: "",
+    plan: ""
+  });
 
   // These would be passed from the previous page
   const sourceLanguage = new URLSearchParams(window.location.search).get('source') || "en";
@@ -173,6 +183,14 @@ const TranslationSession = () => {
     setIsDragging(false);
   };
 
+  // Handle SOAP notes change
+  const handleSoapChange = (section: keyof typeof soapNotes, value: string) => {
+    setSoapNotes(prev => ({
+      ...prev,
+      [section]: value
+    }));
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-healthcare-light to-white">
       {/* Header with languages and flags */}
@@ -203,40 +221,108 @@ const TranslationSession = () => {
       </header>
 
       {/* Main content */}
-      <main className="flex-1 container max-w-4xl mx-auto px-4 py-8 flex flex-col">
-        {/* Transcription area */}
-        <Card className="flex-1 mb-6 overflow-y-auto max-h-[calc(100vh-300px)] p-4">
-          {doctorTranscriptions.length === 0 && patientTranscriptions.length === 0 ? (
-            <div className="h-full flex items-center justify-center text-gray-400">
-              <p>Transcriptions will appear here. Press the microphone button to begin.</p>
+      <main className="flex-1 container max-w-7xl mx-auto px-4 py-8 flex flex-col">
+        {/* Transcription and SOAP Notes area */}
+        <div className="flex flex-col lg:flex-row gap-6 mb-6 h-[calc(100vh-300px)]">
+          {/* Transcription column */}
+          <Card className="flex-1 overflow-y-auto p-4">
+            <h2 className="text-lg font-semibold mb-4 text-healthcare-dark">Transcriptions</h2>
+            {doctorTranscriptions.length === 0 && patientTranscriptions.length === 0 ? (
+              <div className="h-full flex items-center justify-center text-gray-400">
+                <p>Transcriptions will appear here. Press the microphone button to begin.</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {/* Combine and sort transcriptions chronologically - this is simplified for the example */}
+                {doctorTranscriptions.map((transcript, index) => (
+                  <div key={`doctor-${index}`} className="rounded-lg p-4 bg-healthcare-light border-l-4 border-healthcare-primary">
+                    <p className="text-xs font-semibold text-healthcare-primary mb-1">Doctor ({getLanguageName(sourceLanguage)})</p>
+                    <p className="font-medium">{transcript.source}</p>
+                    <div className="mt-2 pt-2 border-t border-dashed border-gray-200">
+                      <p className="text-xs font-semibold text-healthcare-primary mb-1">Translation ({getLanguageName(targetLanguage)})</p>
+                      <p className="font-medium">{transcript.target}</p>
+                    </div>
+                  </div>
+                ))}
+                
+                {patientTranscriptions.map((transcript, index) => (
+                  <div key={`patient-${index}`} className="rounded-lg p-4 bg-amber-50 border-l-4 border-amber-500">
+                    <p className="text-xs font-semibold text-amber-600 mb-1">Patient ({getLanguageName(targetLanguage)})</p>
+                    <p className="font-medium">{transcript.source}</p>
+                    <div className="mt-2 pt-2 border-t border-dashed border-gray-200">
+                      <p className="text-xs font-semibold text-amber-600 mb-1">Translation ({getLanguageName(sourceLanguage)})</p>
+                      <p className="font-medium">{transcript.target}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </Card>
+          
+          {/* SOAP Notes column */}
+          <Card className="flex-1 overflow-y-auto p-4">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-lg font-semibold text-healthcare-dark">SOAP Notes</h2>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="flex items-center gap-1 text-healthcare-primary border-healthcare-primary"
+              >
+                <Save size={16} /> Save Notes
+              </Button>
             </div>
-          ) : (
+            
             <div className="space-y-4">
-              {/* Combine and sort transcriptions chronologically - this is simplified for the example */}
-              {doctorTranscriptions.map((transcript, index) => (
-                <div key={`doctor-${index}`} className="rounded-lg p-4 bg-healthcare-light border-l-4 border-healthcare-primary">
-                  <p className="text-xs font-semibold text-healthcare-primary mb-1">Doctor ({getLanguageName(sourceLanguage)})</p>
-                  <p className="font-medium">{transcript.source}</p>
-                  <div className="mt-2 pt-2 border-t border-dashed border-gray-200">
-                    <p className="text-xs font-semibold text-healthcare-primary mb-1">Translation ({getLanguageName(targetLanguage)})</p>
-                    <p className="font-medium">{transcript.target}</p>
-                  </div>
-                </div>
-              ))}
+              {/* Subjective */}
+              <div>
+                <h3 className="text-sm font-medium mb-1 text-healthcare-dark">Subjective</h3>
+                <p className="text-xs text-gray-500 mb-1">Patient's reported symptoms, complaints, and history</p>
+                <Textarea 
+                  placeholder="Enter patient's subjective information..."
+                  value={soapNotes.subjective}
+                  onChange={(e) => handleSoapChange('subjective', e.target.value)}
+                  className="resize-none focus-visible:ring-healthcare-primary"
+                />
+              </div>
               
-              {patientTranscriptions.map((transcript, index) => (
-                <div key={`patient-${index}`} className="rounded-lg p-4 bg-amber-50 border-l-4 border-amber-500">
-                  <p className="text-xs font-semibold text-amber-600 mb-1">Patient ({getLanguageName(targetLanguage)})</p>
-                  <p className="font-medium">{transcript.source}</p>
-                  <div className="mt-2 pt-2 border-t border-dashed border-gray-200">
-                    <p className="text-xs font-semibold text-amber-600 mb-1">Translation ({getLanguageName(sourceLanguage)})</p>
-                    <p className="font-medium">{transcript.target}</p>
-                  </div>
-                </div>
-              ))}
+              {/* Objective */}
+              <div>
+                <h3 className="text-sm font-medium mb-1 text-healthcare-dark">Objective</h3>
+                <p className="text-xs text-gray-500 mb-1">Measurable, observable data (vital signs, exam findings)</p>
+                <Textarea 
+                  placeholder="Enter objective observations..."
+                  value={soapNotes.objective}
+                  onChange={(e) => handleSoapChange('objective', e.target.value)}
+                  className="resize-none focus-visible:ring-healthcare-primary"
+                />
+              </div>
+              
+              {/* Assessment */}
+              <div>
+                <h3 className="text-sm font-medium mb-1 text-healthcare-dark">Assessment</h3>
+                <p className="text-xs text-gray-500 mb-1">Diagnosis or clinical impression</p>
+                <Textarea 
+                  placeholder="Enter assessment or diagnosis..."
+                  value={soapNotes.assessment}
+                  onChange={(e) => handleSoapChange('assessment', e.target.value)}
+                  className="resize-none focus-visible:ring-healthcare-primary"
+                />
+              </div>
+              
+              {/* Plan */}
+              <div>
+                <h3 className="text-sm font-medium mb-1 text-healthcare-dark">Plan</h3>
+                <p className="text-xs text-gray-500 mb-1">Treatment plan, medications, follow-up</p>
+                <Textarea 
+                  placeholder="Enter treatment plan..."
+                  value={soapNotes.plan}
+                  onChange={(e) => handleSoapChange('plan', e.target.value)}
+                  className="resize-none focus-visible:ring-healthcare-primary"
+                />
+              </div>
             </div>
-          )}
-        </Card>
+          </Card>
+        </div>
         
         {/* Bottom area with mic button and end session slider */}
         <div className="flex flex-col gap-4">
