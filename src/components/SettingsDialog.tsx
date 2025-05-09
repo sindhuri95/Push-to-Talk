@@ -2,9 +2,7 @@
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { Slider } from "@/components/ui/slider";
 import { Textarea } from "@/components/ui/textarea";
 
 interface SettingsDialogProps {
@@ -13,8 +11,6 @@ interface SettingsDialogProps {
 }
 
 const SettingsDialog = ({ open, onOpenChange }: SettingsDialogProps) => {
-  const [autoDetect, setAutoDetect] = useState(false);
-  const [speakingSpeed, setSpeakingSpeed] = useState([1.0]);
   const [initialGreeting, setInitialGreeting] = useState('');
 
   return (
@@ -28,46 +24,6 @@ const SettingsDialog = ({ open, onOpenChange }: SettingsDialogProps) => {
         </DialogHeader>
         
         <div className="py-4 space-y-6">
-          {/* Auto-detect language */}
-          <div className="flex items-center justify-between">
-            <div className="space-y-0.5">
-              <Label htmlFor="auto-detect">Auto-detect source language</Label>
-              <p className="text-sm text-muted-foreground">
-                Automatically detect the language being spoken
-              </p>
-            </div>
-            <Switch
-              id="auto-detect"
-              checked={autoDetect}
-              onCheckedChange={setAutoDetect}
-            />
-          </div>
-          
-          {/* Speaking speed */}
-          <div className="space-y-3">
-            <div className="space-y-0.5">
-              <Label>Speaking speed</Label>
-              <p className="text-sm text-muted-foreground">
-                Adjust how fast the translations are spoken
-              </p>
-            </div>
-            <div className="flex items-center space-x-4">
-              <span className="text-sm">Slow</span>
-              <Slider
-                value={speakingSpeed}
-                min={0.5}
-                max={2}
-                step={0.1}
-                onValueChange={setSpeakingSpeed}
-                className="flex-1"
-              />
-              <span className="text-sm">Fast</span>
-            </div>
-            <div className="text-center text-sm font-medium">
-              {speakingSpeed[0]}x
-            </div>
-          </div>
-          
           {/* Initial Greeting */}
           <div className="space-y-3">
             <div className="space-y-0.5">

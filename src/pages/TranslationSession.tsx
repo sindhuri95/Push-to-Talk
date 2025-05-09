@@ -322,13 +322,6 @@ const TranslationSession = () => {
               <Card className="h-full overflow-y-auto p-4 rounded-none border-none">
                 <div className="flex justify-between items-center mb-4">
                   <h2 className="text-lg font-semibold text-healthcare-dark">SOAP Notes</h2>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="flex items-center gap-1 text-healthcare-primary border-healthcare-primary"
-                  >
-                    <Save size={16} /> Save Notes
-                  </Button>
                 </div>
                 
                 <div className="space-y-4">
