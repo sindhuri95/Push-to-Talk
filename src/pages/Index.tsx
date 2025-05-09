@@ -32,29 +32,29 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-healthcare-light to-white flex flex-col">
+    <div className="min-h-screen bg-gradient-to-b from-healthcare-secondary/20 to-white flex flex-col">
       {/* Header */}
       <header className="w-full py-4 px-6 bg-white border-b shadow-sm">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div className="flex items-center space-x-2">
             <Globe className="h-6 w-6 text-healthcare-primary" />
-            <h1 className="text-xl font-bold text-healthcare-dark">Curalingo</h1>
+            <h1 className="text-xl font-bold text-healthcare-primary">Curalingo</h1>
           </div>
           <Button 
             variant="ghost" 
             size="icon" 
             onClick={() => setIsSettingsOpen(true)}
           >
-            <Settings className="h-5 w-5 text-healthcare-dark" />
+            <Settings className="h-5 w-5 text-healthcare-primary" />
           </Button>
         </div>
       </header>
 
       {/* Main content */}
       <main className="flex-1 container max-w-3xl mx-auto px-4 py-8 flex flex-col items-center justify-center">
-        <Card className="w-full shadow-lg border-healthcare-primary/20">
+        <Card className="w-full shadow-lg border-healthcare-secondary/20">
           <CardHeader className="text-center">
-            <CardTitle className="text-3xl text-healthcare-dark font-bold">
+            <CardTitle className="text-3xl text-healthcare-primary font-bold">
               Healthcare Translation
             </CardTitle>
             <CardDescription className="text-lg mt-2">
@@ -99,7 +99,7 @@ const Index = () => {
           </CardContent>
           <CardFooter>
             <Button 
-              className="w-full py-6 text-lg bg-healthcare-primary hover:bg-healthcare-dark transition-colors"
+              className="w-full py-6 text-lg bg-healthcare-primary hover:bg-healthcare-secondary transition-colors"
               onClick={handleStartSession}
               disabled={isLoading}
             >

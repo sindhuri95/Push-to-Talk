@@ -30,11 +30,11 @@ export default {
 					foreground: 'hsl(var(--primary-foreground))'
 				},
 				healthcare: {
-					primary: '#0EA5E9',
-					secondary: '#10B981',
+					primary: '#0d3253', // Updated to deep navy blue
+					secondary: '#5cc5d5', // Updated to teal/cyan
 					accent: '#8B5CF6',
 					light: '#EFF6FF',
-					dark: '#1E3A8A'
+					dark: '#0d3253'  // Also updated for consistency
 				},
 				secondary: {
 					DEFAULT: 'hsl(var(--secondary))',
