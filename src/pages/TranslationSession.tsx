@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -246,7 +245,6 @@ const TranslationSession = () => {
             size="sm"
             className="bg-red-600 hover:bg-red-700 text-white rounded-md px-4 py-1 text-sm font-medium"
             onClick={() => {
-              setEndSessionValue([100]);
               setShowGenerateButton(true);
             }}
           >
@@ -277,8 +275,23 @@ const TranslationSession = () => {
                 {doctorTranscriptions.length === 0 && patientTranscriptions.length === 0 ? (
                   <div className="h-full flex flex-col items-center justify-center text-gray-400">
                     <img src="/placeholder.svg" alt="Empty state" className="w-24 h-24 mb-4 opacity-40" />
-                    <p>Transcriptions will appear here</p>
-                    <p className="text-sm mt-1">Press the microphone button to begin</p>
+                    <p className="font-medium text-gray-600">No transcriptions yet</p>
+                    <p className="text-sm mt-1 mb-3">Press the microphone button below to begin recording</p>
+                    <div className="max-w-sm text-center p-4 rounded-lg bg-gray-50 border border-gray-200">
+                      <p className="text-sm text-gray-500">
+                        <span className="font-semibold">How it works:</span> Speak clearly into your microphone. 
+                        Your speech will be transcribed and translated in real-time between the provider and patient languages.
+                      </p>
+                      <div className="flex items-center justify-center gap-2 mt-2">
+                        <div className="flex items-center text-xs text-healthcare-primary font-medium">
+                          <div className="w-3 h-3 rounded-full bg-healthcare-primary mr-1"></div>Provider
+                        </div>
+                        <ArrowRight size={12} className="text-gray-400" />
+                        <div className="flex items-center text-xs text-healthcare-secondary font-medium">
+                          <div className="w-3 h-3 rounded-full bg-healthcare-secondary mr-1"></div>Patient
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 ) : (
                   <div className="space-y-4 px-2">
@@ -351,73 +364,61 @@ const TranslationSession = () => {
 
             <ResizableHandle withHandle className="bg-gray-100" />
             
-            {/* SOAP Notes column */}
+            {/* SOAP Notes column - updated to appear non-editable */}
             <ResizablePanel defaultSize={50} minSize={30}>
               <Card className="h-full overflow-y-auto p-6 rounded-none border-none bg-white">
                 <div className="mb-6">
                   <h2 className="text-lg font-semibold text-healthcare-primary mb-1">SOAP Notes</h2>
-                  <p className="text-sm text-gray-500">Document your clinical observations</p>
+                  <p className="text-sm text-gray-500">Automated documentation from your session (read-only)</p>
                 </div>
                 
                 <div className="space-y-5">
-                  {/* Subjective */}
-                  <div className="bg-gray-50 rounded-lg p-4 border border-gray-100 transition-all hover:border-healthcare-primary/30">
+                  {/* Subjective - non-editable styling */}
+                  <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
                     <h3 className="text-sm font-semibold mb-1 text-healthcare-primary flex items-center gap-1">
                       <span className="inline-block w-2 h-2 bg-healthcare-primary rounded-full"></span>
                       Subjective
                     </h3>
                     <p className="text-xs text-gray-500 mb-2">Patient's reported symptoms, complaints, and history</p>
-                    <Textarea 
-                      placeholder="Enter patient's subjective information..."
-                      value={soapNotes.subjective}
-                      onChange={(e) => handleSoapChange('subjective', e.target.value)}
-                      className="resize-none focus-visible:ring-healthcare-primary border-gray-200 min-h-[100px]"
-                    />
+                    <div className="min-h-[100px] bg-gray-100/70 rounded-md p-3 text-gray-600 text-sm border border-gray-200">
+                      {soapNotes.subjective || "Automatically generated content will appear here as the conversation progresses..."}
+                    </div>
                   </div>
                   
-                  {/* Objective */}
-                  <div className="bg-gray-50 rounded-lg p-4 border border-gray-100 transition-all hover:border-healthcare-primary/30">
+                  {/* Objective - non-editable styling */}
+                  <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
                     <h3 className="text-sm font-semibold mb-1 text-healthcare-primary flex items-center gap-1">
                       <span className="inline-block w-2 h-2 bg-healthcare-primary rounded-full"></span>
                       Objective
                     </h3>
                     <p className="text-xs text-gray-500 mb-2">Measurable, observable data (vital signs, exam findings)</p>
-                    <Textarea 
-                      placeholder="Enter objective observations..."
-                      value={soapNotes.objective}
-                      onChange={(e) => handleSoapChange('objective', e.target.value)}
-                      className="resize-none focus-visible:ring-healthcare-primary border-gray-200 min-h-[100px]"
-                    />
+                    <div className="min-h-[100px] bg-gray-100/70 rounded-md p-3 text-gray-600 text-sm border border-gray-200">
+                      {soapNotes.objective || "Automatically generated content will appear here as the conversation progresses..."}
+                    </div>
                   </div>
                   
-                  {/* Assessment */}
-                  <div className="bg-gray-50 rounded-lg p-4 border border-gray-100 transition-all hover:border-healthcare-primary/30">
+                  {/* Assessment - non-editable styling */}
+                  <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
                     <h3 className="text-sm font-semibold mb-1 text-healthcare-primary flex items-center gap-1">
                       <span className="inline-block w-2 h-2 bg-healthcare-primary rounded-full"></span>
                       Assessment
                     </h3>
                     <p className="text-xs text-gray-500 mb-2">Diagnosis or clinical impression</p>
-                    <Textarea 
-                      placeholder="Enter assessment or diagnosis..."
-                      value={soapNotes.assessment}
-                      onChange={(e) => handleSoapChange('assessment', e.target.value)}
-                      className="resize-none focus-visible:ring-healthcare-primary border-gray-200 min-h-[100px]"
-                    />
+                    <div className="min-h-[100px] bg-gray-100/70 rounded-md p-3 text-gray-600 text-sm border border-gray-200">
+                      {soapNotes.assessment || "Automatically generated content will appear here as the conversation progresses..."}
+                    </div>
                   </div>
                   
-                  {/* Plan */}
-                  <div className="bg-gray-50 rounded-lg p-4 border border-gray-100 transition-all hover:border-healthcare-primary/30">
+                  {/* Plan - non-editable styling */}
+                  <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
                     <h3 className="text-sm font-semibold mb-1 text-healthcare-primary flex items-center gap-1">
                       <span className="inline-block w-2 h-2 bg-healthcare-primary rounded-full"></span>
                       Plan
                     </h3>
                     <p className="text-xs text-gray-500 mb-2">Treatment plan, medications, follow-up</p>
-                    <Textarea 
-                      placeholder="Enter treatment plan..."
-                      value={soapNotes.plan}
-                      onChange={(e) => handleSoapChange('plan', e.target.value)}
-                      className="resize-none focus-visible:ring-healthcare-primary border-gray-200 min-h-[100px]"
-                    />
+                    <div className="min-h-[100px] bg-gray-100/70 rounded-md p-3 text-gray-600 text-sm border border-gray-200">
+                      {soapNotes.plan || "Automatically generated content will appear here as the conversation progresses..."}
+                    </div>
                   </div>
                 </div>
               </Card>
@@ -425,9 +426,9 @@ const TranslationSession = () => {
           </ResizablePanelGroup>
         </div>
         
-        {/* Bottom area with mic button and end session slider */}
+        {/* Bottom area with mic button only - removed slider */}
         <div className="flex flex-col gap-4">
-          {/* Mic button centered - moved above the slider */}
+          {/* Mic button centered */}
           <div className="flex justify-center">
             <Button
               onClick={toggleListening}
@@ -450,47 +451,20 @@ const TranslationSession = () => {
             </div>
           </div>
           
-          {/* End session controls */}
+          {/* Generate summary button - always visible now */}
           <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex justify-center mt-4">
-            {!showGenerateButton ? (
-              <div className="relative w-72 h-14 bg-gradient-to-r from-gray-50 to-gray-100 rounded-full overflow-hidden shadow-sm flex items-center border border-gray-200">
-                <div 
-                  className={`absolute left-0 top-0 bottom-0 flex items-center justify-center z-10 w-14 h-14 bg-white rounded-full shadow-md transition-all ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
-                  style={{ left: `calc(${endSessionValue[0]}% - ${endSessionValue[0] > 0 ? 56 * (endSessionValue[0]/100) : 0}px)` }}
-                >
-                  <CircleArrowRight className="h-7 w-7 text-healthcare-primary" />
+            <Button
+              onClick={handleGenerateSummary}
+              disabled={isGeneratingSummary}
+              className="w-72 py-6 bg-healthcare-primary hover:bg-healthcare-dark text-white rounded-full shadow-md transition-all"
+            >
+              {isGeneratingSummary ? (
+                <div className="flex items-center gap-2">
+                  <div className="h-4 w-4 rounded-full border-2 border-t-transparent border-white animate-spin"></div>
+                  <span>Generating...</span>
                 </div>
-                <div className="flex-1 text-center text-healthcare-primary font-medium ml-16">
-                  Slide to End Session
-                </div>
-                <Slider
-                  id="end-session-slider"
-                  value={endSessionValue}
-                  min={0}
-                  max={100}
-                  step={1}
-                  onValueChange={handleSliderChange}
-                  onValueCommit={handleDragEnd}
-                  onMouseDown={handleDragStart}
-                  onTouchStart={handleDragStart}
-                  className="absolute top-0 left-0 right-0 bottom-0 opacity-0 w-full cursor-pointer"
-                  disabled={isGeneratingSummary}
-                />
-              </div>
-            ) : (
-              <Button
-                onClick={handleGenerateSummary}
-                disabled={isGeneratingSummary}
-                className="w-72 py-6 bg-healthcare-primary hover:bg-healthcare-dark text-white rounded-full shadow-md transition-all"
-              >
-                {isGeneratingSummary ? (
-                  <div className="flex items-center gap-2">
-                    <div className="h-4 w-4 rounded-full border-2 border-t-transparent border-white animate-spin"></div>
-                    <span>Generating...</span>
-                  </div>
-                ) : "Generate Summary"}
-              </Button>
-            )}
+              ) : "Generate Summary"}
+            </Button>
           </div>
         </div>
       </main>
