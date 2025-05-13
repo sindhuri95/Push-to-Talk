@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -16,10 +17,7 @@ const TranslationSession = () => {
   const [patientTranscriptions, setPatientTranscriptions] = useState<{ source: string; target: string }[]>([]);
   const [currentSpeaker, setCurrentSpeaker] = useState<"doctor" | "patient">("doctor");
   const [elapsedTime, setElapsedTime] = useState(0);
-  const [endSessionValue, setEndSessionValue] = useState([0]);
-  const [isDragging, setIsDragging] = useState(false);
-  const [showGenerateButton, setShowGenerateButton] = useState(false);
-  const [isGeneratingSummary, setIsGeneratingSummary] = useState(false);
+  const [playingAudio, setPlayingAudio] = useState<string | null>(null);
   
   // SOAP Notes state
   const [soapNotes, setSoapNotes] = useState({
@@ -28,9 +26,6 @@ const TranslationSession = () => {
     assessment: "",
     plan: ""
   });
-
-  // Audio replay state
-  const [playingAudio, setPlayingAudio] = useState<string | null>(null);
 
   // These would be passed from the previous page
   const sourceLanguage = new URLSearchParams(window.location.search).get('source') || "en";
@@ -44,16 +39,6 @@ const TranslationSession = () => {
     
     return () => clearInterval(timer);
   }, []);
-
-  // Effect to handle slider completion
-  useEffect(() => {
-    if (endSessionValue[0] >= 90 && isDragging) {
-      // Automatically complete to 100 when user gets close
-      setEndSessionValue([100]);
-      setShowGenerateButton(true);
-      setIsDragging(false);
-    }
-  }, [endSessionValue, isDragging]);
 
   // Format elapsed time as MM:SS
   const formatTime = (seconds: number): string => {
@@ -147,15 +132,6 @@ const TranslationSession = () => {
     }
   };
 
-  const handleSliderChange = (value: number[]) => {
-    setEndSessionValue(value);
-    
-    // Show the Generate Summary button if the slider reaches 100
-    if (value[0] === 100) {
-      setShowGenerateButton(true);
-    }
-  };
-
   const handleReplayAudio = (type: string, index: number) => {
     const audioId = `${type}-${index}`;
     setPlayingAudio(audioId);
@@ -170,36 +146,6 @@ const TranslationSession = () => {
     setTimeout(() => {
       setPlayingAudio(null);
     }, 2000);
-  };
-
-  const handleGenerateSummary = () => {
-    setIsGeneratingSummary(true);
-    toast({
-      title: "Generating summary...",
-      description: "Please wait while we prepare your session summary.",
-    });
-    
-    // Simulate generating a summary (would be replaced with actual API call)
-    setTimeout(() => {
-      setIsGeneratingSummary(false);
-      toast({
-        title: "Summary generated",
-        description: "Your session summary is ready.",
-      });
-      navigate("/");
-    }, 2000);
-  };
-
-  // Handle mouse/touch events to improve slider UX
-  const handleDragStart = () => {
-    setIsDragging(true);
-  };
-
-  const handleDragEnd = () => {
-    if (endSessionValue[0] < 90) {
-      setEndSessionValue([0]);
-    }
-    setIsDragging(false);
   };
 
   // Handle SOAP notes change
@@ -245,7 +191,7 @@ const TranslationSession = () => {
             size="sm"
             className="bg-red-600 hover:bg-red-700 text-white rounded-md px-4 py-1 text-sm font-medium"
             onClick={() => {
-              setShowGenerateButton(true);
+              navigate('/');
             }}
           >
             End Session
@@ -426,7 +372,7 @@ const TranslationSession = () => {
           </ResizablePanelGroup>
         </div>
         
-        {/* Bottom area with mic button only - removed slider */}
+        {/* Bottom area with mic button only */}
         <div className="flex flex-col gap-4">
           {/* Mic button centered */}
           <div className="flex justify-center">
@@ -449,22 +395,6 @@ const TranslationSession = () => {
             <div className="absolute mt-20 text-xs font-medium text-gray-500">
               {currentSpeaker === "doctor" ? "Provider speaking" : "Patient speaking"}
             </div>
-          </div>
-          
-          {/* Generate summary button - always visible now */}
-          <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex justify-center mt-4">
-            <Button
-              onClick={handleGenerateSummary}
-              disabled={isGeneratingSummary}
-              className="w-72 py-6 bg-healthcare-primary hover:bg-healthcare-dark text-white rounded-full shadow-md transition-all"
-            >
-              {isGeneratingSummary ? (
-                <div className="flex items-center gap-2">
-                  <div className="h-4 w-4 rounded-full border-2 border-t-transparent border-white animate-spin"></div>
-                  <span>Generating...</span>
-                </div>
-              ) : "Generate Summary"}
-            </Button>
           </div>
         </div>
       </main>
