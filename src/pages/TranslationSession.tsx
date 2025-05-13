@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Mic, MicOff, Clock, ArrowRight, CircleArrowRight, Save, SkipBack } from "lucide-react";
+import { Mic, MicOff, Clock, ArrowRight, CircleArrowRight, Save, SkipBack, ChevronLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { Slider } from "@/components/ui/slider";
@@ -213,29 +213,45 @@ const TranslationSession = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-healthcare-light/50 to-white">
-      {/* Header with languages and flags */}
-      <header className="w-full py-3 px-6 bg-white border-b backdrop-blur-sm bg-white/70 shadow-sm sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <div className="flex items-center space-x-2">
-            <h1 className="text-xl font-bold text-healthcare-primary">Curalingo</h1>
-            <div className="flex items-center space-x-1 px-3 py-1 bg-healthcare-primary/5 rounded-full">
-              <Clock className="h-3.5 w-3.5 text-healthcare-primary" />
-              <span className="text-sm font-medium text-healthcare-primary">{formatTime(elapsedTime)}</span>
-            </div>
+      {/* Updated header based on the design reference */}
+      <header className="w-full py-2 bg-healthcare-primary text-white flex items-center justify-between px-4 sticky top-0 z-10 shadow-md">
+        <div className="flex items-center">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="text-white hover:bg-healthcare-primary/80 mr-2"
+            onClick={() => navigate('/')}
+          >
+            <ChevronLeft className="h-5 w-5" />
+          </Button>
+          <div className="flex items-center">
+            <h1 className="text-xl font-bold">CuraLingo</h1>
           </div>
-          
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center bg-healthcare-light/30 px-3 py-1.5 rounded-full">
-              <span className="text-lg mr-2">{getFlagEmoji(sourceLanguage)}</span>
-              <span className="font-medium text-sm text-healthcare-primary">{getLanguageName(sourceLanguage)}</span>
-              <span className="mx-2 text-gray-400">→</span>
-              <span className="text-lg mr-2">{getFlagEmoji(targetLanguage)}</span>
-              <span className="font-medium text-sm text-healthcare-secondary">{getLanguageName(targetLanguage)}</span>
+        </div>
+
+        <div className="flex items-center space-x-2">
+          <div className="flex items-center justify-center rounded-md bg-healthcare-primary/30 px-3 py-1">
+            <span className="text-sm font-medium text-white mr-1">{getLanguageName(sourceLanguage)}</span>
+            <div className="w-5 h-5 flex items-center justify-center">
+              <ArrowRight size={14} />
             </div>
-            <div className="flex items-center bg-healthcare-primary/10 rounded-full h-8 w-8 justify-center">
-              <span className="text-xs font-semibold text-healthcare-primary">D</span>
-            </div>
+            <span className="text-sm font-medium text-white">{getLanguageName(targetLanguage)}</span>
           </div>
+          <div className="flex items-center bg-healthcare-primary/30 px-3 py-1 rounded-md">
+            <Clock className="h-4 w-4 mr-1" />
+            <span className="text-sm font-medium">{formatTime(elapsedTime)}</span>
+          </div>
+          <Button 
+            variant="destructive" 
+            size="sm"
+            className="bg-red-600 hover:bg-red-700 text-white rounded-md px-4 py-1 text-sm font-medium"
+            onClick={() => {
+              setEndSessionValue([100]);
+              setShowGenerateButton(true);
+            }}
+          >
+            End Session
+          </Button>
         </div>
       </header>
 
@@ -254,7 +270,7 @@ const TranslationSession = () => {
                       ? "bg-healthcare-primary/10 text-healthcare-primary" 
                       : "bg-healthcare-secondary/10 text-healthcare-secondary"
                   }`}>
-                    {currentSpeaker === "doctor" ? "Doctor's turn" : "Patient's turn"}
+                    {currentSpeaker === "doctor" ? "Provider's turn" : "Patient's turn"}
                   </div>
                 </div>
                 
@@ -276,7 +292,7 @@ const TranslationSession = () => {
                           D
                         </div>
                         <div className="flex items-center justify-between mb-1">
-                          <p className="text-xs font-semibold text-healthcare-primary">Doctor ({getLanguageName(sourceLanguage)})</p>
+                          <p className="text-xs font-semibold text-healthcare-primary">Provider ({getLanguageName(sourceLanguage)})</p>
                           <Button 
                             variant="ghost" 
                             size="sm" 
@@ -430,7 +446,7 @@ const TranslationSession = () => {
             </Button>
             
             <div className="absolute mt-20 text-xs font-medium text-gray-500">
-              {currentSpeaker === "doctor" ? "Doctor speaking" : "Patient speaking"}
+              {currentSpeaker === "doctor" ? "Provider speaking" : "Patient speaking"}
             </div>
           </div>
           
@@ -483,4 +499,3 @@ const TranslationSession = () => {
 };
 
 export default TranslationSession;
-
