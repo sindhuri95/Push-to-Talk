@@ -5,13 +5,13 @@ import {
   ButtonProps as ChakraButtonProps 
 } from "@chakra-ui/react";
 
-export interface ButtonProps extends ChakraButtonProps {
+export interface ButtonProps extends Omit<ChakraButtonProps, "size"> {
   asChild?: boolean;
   variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
   size?: "default" | "sm" | "lg" | "icon";
 }
 
-const variantMapping = {
+const variantMapping: Record<string, string> = {
   default: "solid",
   destructive: "solid",
   outline: "outline",
@@ -20,7 +20,7 @@ const variantMapping = {
   link: "link",
 };
 
-const sizeMapping = {
+const sizeMapping: Record<string, string> = {
   default: "md",
   sm: "sm",
   lg: "lg",

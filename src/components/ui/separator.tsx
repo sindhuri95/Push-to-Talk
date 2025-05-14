@@ -1,8 +1,8 @@
 
 import React from "react";
-import { Divider, DividerProps } from "@chakra-ui/react";
+import { Divider, DividerProps as ChakaraDividerProps } from "@chakra-ui/react";
 
-interface SeparatorProps extends DividerProps {
+interface SeparatorProps extends ChakaraDividerProps {
   orientation?: "horizontal" | "vertical";
   decorative?: boolean;
 }

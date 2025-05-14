@@ -25,15 +25,11 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
   }
 );
 
+Select.displayName = "Select";
+
 const SelectGroup = ({ children, ...props }: { children: React.ReactNode }) => {
   return <optgroup {...props}>{children}</optgroup>;
 };
-
-const SelectValue = (props: any) => null; // Not needed in Chakra UI
-
-const SelectTrigger = (props: any) => null; // Not needed in Chakra UI
-
-const SelectContent = (props: any) => null; // Not needed in Chakra UI
 
 const SelectItem = ({ value, children, ...props }: { value: string, children: React.ReactNode }) => {
   return (
@@ -43,7 +39,11 @@ const SelectItem = ({ value, children, ...props }: { value: string, children: Re
   );
 };
 
-const SelectLabel = (props: any) => null; // Not needed in Chakra UI
+// These components are not needed for Chakra UI but kept for compatibility
+const SelectValue = (props: any) => null;
+const SelectTrigger = (props: any) => null;
+const SelectContent = (props: any) => null;
+const SelectLabel = (props: any) => null;
 
 export { 
   Select, 

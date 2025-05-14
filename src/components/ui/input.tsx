@@ -9,7 +9,7 @@ export interface InputProps extends Omit<ChakraInputProps, "size"> {
   size?: "default" | "sm" | "lg";
 }
 
-const sizeMapping = {
+const sizeMapping: Record<string, string> = {
   default: "md",
   sm: "sm",
   lg: "lg",
