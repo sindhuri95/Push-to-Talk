@@ -24,7 +24,7 @@ const SettingsDialog = ({ open, onOpenChange }: SettingsDialogProps) => {
   return (
     <Modal isOpen={open} onClose={() => onOpenChange(false)}>
       <ModalOverlay />
-      <ModalContent maxW="425px">
+      <ModalContent maxWidth="425px">
         <ModalHeader>Translation Settings</ModalHeader>
         <ModalCloseButton />
         <ModalBody pb={6}>
