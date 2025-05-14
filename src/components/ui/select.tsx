@@ -45,7 +45,7 @@ const SelectItem = ({ value, children, ...props }: { value: string, children: Re
 
 const SelectLabel = (props: any) => null; // Not needed in Chakra UI
 
-Export { 
+export { 
   Select, 
   SelectGroup, 
   SelectItem, 
