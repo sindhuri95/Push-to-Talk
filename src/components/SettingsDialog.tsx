@@ -11,9 +11,8 @@ import {
   Button,
   Text,
   Textarea,
-  FormControl,
-  FormLabel
 } from "@chakra-ui/react";
+import { FormControl, FormLabel } from "@chakra-ui/form-control";
 
 interface SettingsDialogProps {
   open: boolean;
