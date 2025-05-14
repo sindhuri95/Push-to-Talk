@@ -1,10 +1,7 @@
 
 import React from 'react';
-import {
-  FormControl,
-  FormLabel,
-  Select,
-} from "@chakra-ui/react";
+import { Select } from "@chakra-ui/react";
+import { FormControl, FormLabel } from "@chakra-ui/form-control";
 
 interface LanguageSelectorProps {
   value: string;
