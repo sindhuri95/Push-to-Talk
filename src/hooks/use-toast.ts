@@ -1,5 +1,5 @@
 
-import { useToast as useChakraToast } from "@chakra-ui/react";
+import { useToast as useChakraToast } from "@chakra-ui/toast";
 
 export type ToastProps = {
   id?: string;
