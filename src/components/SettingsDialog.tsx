@@ -8,10 +8,12 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
-} from "@chakra-ui/modal";
-import { Button, Text } from "@chakra-ui/react";
-import { FormControl, FormLabel } from "@chakra-ui/form-control";
-import { Textarea } from "@chakra-ui/react";
+  Button,
+  Text,
+  FormControl,
+  FormLabel,
+  Textarea
+} from "@chakra-ui/react";
 
 interface SettingsDialogProps {
   open: boolean;
