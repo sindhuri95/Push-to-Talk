@@ -1,6 +1,7 @@
 
 import { createRoot } from 'react-dom/client'
-import { ChakraProvider, extendTheme } from '@chakra-ui/react'
+import { ChakraProvider } from '@chakra-ui/react'
+import { extendTheme } from '@chakra-ui/theme'
 import App from './App.tsx'
 import './index.css'
 
@@ -8,9 +9,9 @@ import './index.css'
 const theme = extendTheme({
   colors: {
     healthcare: {
-      primary: '#4F6BED',
-      dark: '#3A56C5',
-      light: '#7C93F5'
+      primary: '#0d3253', // Updated to deep navy blue
+      dark: '#0d3253',
+      light: '#5cc5d5'
     }
   },
   fonts: {
