@@ -3,8 +3,8 @@ import * as React from "react"
 import {
   AlertDialog as ChakraAlertDialog,
   AlertDialogBody,
-  AlertDialogFooter,
-  AlertDialogHeader,
+  AlertDialogFooter as ChakraAlertDialogFooter,
+  AlertDialogHeader as ChakraAlertDialogHeader,
   AlertDialogContent,
   AlertDialogOverlay,
   AlertDialogCloseButton,
@@ -38,12 +38,12 @@ const AlertDialogTrigger = ({children, ...props}: React.ComponentProps<typeof Bu
   return <Button {...props}>{children}</Button>
 }
 
-const AlertDialogHeader = ({children, ...props}: React.ComponentProps<typeof AlertDialogHeader>) => {
-  return <AlertDialogHeader {...props}>{children}</AlertDialogHeader>
+const AlertDialogHeader = ({children, ...props}: React.ComponentProps<typeof ChakraAlertDialogHeader>) => {
+  return <ChakraAlertDialogHeader {...props}>{children}</ChakraAlertDialogHeader>
 }
 
-const AlertDialogFooter = ({children, ...props}: React.ComponentProps<typeof AlertDialogFooter>) => {
-  return <AlertDialogFooter {...props}>{children}</AlertDialogFooter>
+const AlertDialogFooter = ({children, ...props}: React.ComponentProps<typeof ChakraAlertDialogFooter>) => {
+  return <ChakraAlertDialogFooter {...props}>{children}</ChakraAlertDialogFooter>
 }
 
 const AlertDialogTitle = ({children, ...props}: React.HTMLAttributes<HTMLDivElement>) => {

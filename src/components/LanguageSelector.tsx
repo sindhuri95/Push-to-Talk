@@ -43,7 +43,7 @@ const LanguageSelector = ({ value, onChange, label }: LanguageSelectorProps) => 
         onChange={(e) => onChange(e.target.value)}
         bg="white"
         borderColor="healthcare.primary"
-        borderOpacity={0.3}
+        _hover={{ borderColor: "healthcare.dark" }}
       >
         <option value="" disabled>Select language</option>
         {languages.map((language) => (
