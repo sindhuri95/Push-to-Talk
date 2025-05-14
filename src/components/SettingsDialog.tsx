@@ -1,9 +1,19 @@
 
 import React, { useState } from 'react';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  Button,
+  FormControl,
+  FormLabel,
+  Textarea,
+  Text
+} from "@chakra-ui/react";
 
 interface SettingsDialogProps {
   open: boolean;
@@ -14,42 +24,38 @@ const SettingsDialog = ({ open, onOpenChange }: SettingsDialogProps) => {
   const [initialGreeting, setInitialGreeting] = useState('');
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Translation Settings</DialogTitle>
-          <DialogDescription>
+    <Modal isOpen={open} onClose={() => onOpenChange(false)}>
+      <ModalOverlay />
+      <ModalContent maxW="425px">
+        <ModalHeader>Translation Settings</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody pb={6}>
+          <Text mb={4} color="gray.600">
             Configure your translation preferences
-          </DialogDescription>
-        </DialogHeader>
-        
-        <div className="py-4 space-y-6">
-          {/* Initial Greeting */}
-          <div className="space-y-3">
-            <div className="space-y-0.5">
-              <Label htmlFor="initial-greeting">Initial Greeting</Label>
-              <p className="text-sm text-muted-foreground">
-                Enter a custom greeting or introduction for the session
-              </p>
-            </div>
+          </Text>
+          
+          <FormControl mt={4}>
+            <FormLabel>Initial Greeting</FormLabel>
+            <Text fontSize="sm" color="gray.600" mb={1}>
+              Enter a custom greeting or introduction for the session
+            </Text>
             <Textarea
-              id="initial-greeting"
-              placeholder="E.g., I am a nurse visiting John who only speaks Spanish. Greet the patient and ask how he has been feeling for the past week."
               value={initialGreeting}
               onChange={(e) => setInitialGreeting(e.target.value)}
+              placeholder="E.g., I am a nurse visiting John who only speaks Spanish. Greet the patient and ask how he has been feeling for the past week."
+              resize="none"
               rows={4}
-              className="resize-none"
             />
-          </div>
-        </div>
-        
-        <DialogFooter>
-          <Button onClick={() => onOpenChange(false)}>
+          </FormControl>
+        </ModalBody>
+
+        <ModalFooter>
+          <Button colorScheme="blue" onClick={() => onOpenChange(false)}>
             Save Changes
           </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
   );
 };
 

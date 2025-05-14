@@ -1,7 +1,10 @@
 
 import React from 'react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
+import {
+  FormControl,
+  FormLabel,
+  Select,
+} from "@chakra-ui/react";
 
 interface LanguageSelectorProps {
   value: string;
@@ -30,23 +33,26 @@ const LanguageSelector = ({ value, onChange, label }: LanguageSelectorProps) => 
   ];
 
   return (
-    <div className="space-y-2">
-      <Label htmlFor={`${label.toLowerCase().replace(/\s/g, '-')}`} className="text-sm font-medium">
+    <FormControl mb={2}>
+      <FormLabel fontSize="sm" fontWeight="medium">
         {label}
-      </Label>
-      <Select value={value} onValueChange={onChange}>
-        <SelectTrigger id={`${label.toLowerCase().replace(/\s/g, '-')}`} className="bg-white border-healthcare-primary/30">
-          <SelectValue placeholder="Select language" />
-        </SelectTrigger>
-        <SelectContent>
-          {languages.map((language) => (
-            <SelectItem key={language.code} value={language.code}>
-              {language.name}
-            </SelectItem>
-          ))}
-        </SelectContent>
+      </FormLabel>
+      <Select
+        id={`${label.toLowerCase().replace(/\s/g, '-')}`}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        bg="white"
+        borderColor="healthcare.primary"
+        borderOpacity={0.3}
+      >
+        <option value="" disabled>Select language</option>
+        {languages.map((language) => (
+          <option key={language.code} value={language.code}>
+            {language.name}
+          </option>
+        ))}
       </Select>
-    </div>
+    </FormControl>
   );
 };
 
